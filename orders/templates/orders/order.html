@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+{% block title-head %}
+
+<div class="container">
+    <h1 class="display-4 fw-bold text-center">Checkout</h1>
+</div>
+
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Order Summary -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td class="text-end">${{ item.get_cost }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-group-divider">
+                            <tr>
+                                <td colspan="2" class="text-end fw-bold">Total:</td>
+                                <td class="text-end fw-bold">${{ order.get_total_price }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coupon & Payment -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Apply Coupon</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'orders:coupon_apply' order.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            {{ form }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-tag me-2"></i>Apply
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Payment Summary</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Subtotal:</span>
+                        <span>${{ order.get_total_price }}</span>
+                    </div>
+                    {% if order.coupon %}
+                    <div class="d-flex justify-content-between mb-3 text-success">
+                        <span>Coupon Discount:</span>
+                        <span>-${{ order.get_discount }}</span>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold">${{ order.get_total_price }}</span>
+                    </div>
+                    <div class="d-grid">
+                        <a href="{% url 'orders:payment' order.id order.get_total_price %}"
+                           class="btn btn-primary btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

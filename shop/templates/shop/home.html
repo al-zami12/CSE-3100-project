@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-light py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Welcome to Online Shop</h1>
+        <p class="lead text-muted">Discover our amazing products with great prices</p>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Categories</h2>
+            <div class="d-flex flex-wrap gap-2">
+                {% for category in categories %}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            {{ category.name }}
+                        </button>
+                        <ul class="dropdown-menu shadow-sm">
+                            {% for sub in category.sub_categories.all %}
+                                <li><a class="dropdown-item" href="{{ sub.get_absolut_url }}">{{ sub.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Products Grid -->
+<div class="container">
+    <h2 class="mb-4">Featured Products</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    {% thumbnail product.image "300x300" crop="center" as img %}
+                        <img src="{{ img.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% endthumbnail %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description|truncatewords:10 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">${{ product.price }}</span>
+                            <a href="{{ product.get_absolut_url }}" class="btn btn-primary">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add some custom CSS -->
+{% block extra_css %}
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-3px);
+        transition: all 0.3s ease;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+{% endblock %}

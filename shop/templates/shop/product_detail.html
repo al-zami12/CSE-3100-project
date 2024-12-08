@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Home</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ product.image.url }}" class="card-img-top img-fluid" alt="{{ product.name }}"
+                    style="object-fit: cover; height: 400px;">
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1 class="h2 mb-3">{{ product.name }}</h1>
+            <p class="text-muted mb-3">
+                <i class="fas fa-calendar-alt me-2"></i>
+                Added on {{ product.created|date:"F d, Y" }}
+            </p>
+
+            <div class="mb-4">
+                <h2 class="h4 mb-3">Description</h2>
+                <p class="text-muted">{{ product.description }}</p>
+            </div>
+
+            <div class="mb-4">
+                <span class="h3 text-primary">${{ product.price }}</span>
+            </div>
+
+            <!-- Add to Cart Form -->
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row align-items-center g-3">
+                    <div class="col-auto">
+                        {{ form }}
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Additional Info -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Product Details</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Free shipping
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Available in stock
+                        </li>
+                        <li>
+                            <i class="fas fa-check text-success me-2"></i>
+                            Secure payment
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
